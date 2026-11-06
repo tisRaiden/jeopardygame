@@ -1,550 +1,230 @@
-:root {
-    --bg: #0a1a5c;
-    --bg2: #050d33;
-    --tile: #1a3fb5;
-    --text: #fff;
-    --accent: #ffcc33;
-    --radius: 6px;
-    --font: Impact, sans-serif;
-    --gap: 8px
-}
+<!DOCTYPE html>
+<html lang="en">
 
-* {
-    box-sizing: border-box
-}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Jeopardy Maker</title>
+  <link rel="stylesheet" href="jeopardy.css">
+</head>
 
-html,
-body {
-    height: 100%;
-    margin: 0
-}
+<body class="intro-on">
+  <header>
+    <h1 id="title"></h1>
+    <div class="tb">
+      <button id="bEdit">✎ Edit</button>
+      <button class="edit-only" id="bTheme">🎨 Look</button>
+      <span class="tc edit-only">Teams <button id="tM">−</button><b id="tN"></b><button id="tP">+</button></span>
+      <button id="bExp" title="Download this game as a file">⬇ Save file</button>
+      <button id="bImp" title="Open a saved game file">⬆ Load file</button>
+      <input type="file" id="file" accept=".json" hidden>
+      <button id="bNew" title="Re-open all clues and reset scores">↺ New round</button>
+      <button class="edit-only" id="aC">+ Category</button>
+      <button class="edit-only" id="rC">− Category</button>
+      <button class="edit-only" id="aR">+ Row</button>
+      <button class="edit-only" id="rR">− Row</button>
+      <button class="edit-only" id="rDD" title="Clear all Daily Doubles and place 2 at random">🎲 Random Daily
+        Doubles</button>
+    </div>
+  </header>
+  <div id="board" class="intro"></div>
+  <div id="scores"></div>
 
-body {
-    background: radial-gradient(ellipse at 50% 0, var(--bg), var(--bg2));
-    color: var(--text);
-    font-family: var(--font);
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto
-}
+  <div id="ov" hidden>
+    <div id="card">
+      <div id="meta"></div>
+      <div id="q"></div><img id="qimg" alt="" hidden>
+      <div id="ans"></div>
+      <div id="act"></div>
+    </div>
+  </div>
 
-button,
-input,
-select,
-textarea {
-    font: inherit;
-    color: inherit
-}
+  <div id="ed" class="modal" hidden>
+    <div class="panel">
+      <h3 id="edH">Edit clue</h3>
+      <label>Clue<textarea id="eq" rows="3"></textarea></label>
+      <label>Answer<input id="ea"></label>
+      <label>Image (optional)<input id="ei" type="file" accept="image/*"></label>
+      <div id="eiw" style="display:none;gap:10px;align-items:center"><img id="eip" alt=""
+          style="max-height:80px;border-radius:6px"><button class="btn" id="eiX" type="button">Remove image</button>
+      </div>
+      <div class="row"><label>Row value ($)<input id="ev" type="number"></label><label>Daily Double<select id="ed2">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select></label></div>
+      <div class="row"><button class="btn" id="edX">Cancel</button><button class="btn pri" id="edS">Save</button></div>
+    </div>
+  </div>
 
-button {
-    cursor: pointer
-}
+  <div id="th" class="modal" hidden>
+    <div class="panel">
+      <h3>Customize the look</h3>
+      <label>Preset<select id="tp"></select></label>
+      <div class="row"><label>Background<input type="color" data-k="bg"></label><label>Background edge<input
+            type="color" data-k="bg2"></label>
+        <label>Tiles<input type="color" data-k="tile"></label><label>Text<input type="color" data-k="text"></label>
+        <label>Accent / values<input type="color" data-k="accent"></label>
+        <label>Font<select data-k="font" id="tf"></select></label>
+      </div>
+      <label>Corner roundness<input type="range" min="0" max="30" data-k="radius"></label>
+      <label>Tile spacing<input type="range" min="0" max="20" data-k="gap"></label>
+      <button class="btn pri" id="thX">Done</button>
+    </div>
+  </div>
 
-header {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    flex-wrap: wrap
-}
-
-h1 {
-    margin: 0;
-    font-size: clamp(20px, 3.2vw, 40px);
-    color: var(--accent);
-    letter-spacing: .04em;
-    flex: 1;
-    min-width: 160px;
-    outline: none;
-    text-shadow: 0 2px 0 rgba(0, 0, 0, .35)
-}
-
-h1[contenteditable=true] {
-    border-bottom: 2px dashed var(--accent)
-}
-
-.tb {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap
-}
-
-.tb button,
-.btn {
-    background: rgba(255, 255, 255, .12);
-    border: 1px solid rgba(255, 255, 255, .3);
-    border-radius: var(--radius);
-    padding: 6px 10px;
-    font-size: 14px;
-    transition: transform .12s, background .12s
-}
-
-.tb button:hover,
-.btn:hover {
-    background: rgba(255, 255, 255, .25);
-    transform: translateY(-1px)
-}
-
-.tc {
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    background: rgba(255, 255, 255, .08);
-    border-radius: var(--radius);
-    padding: 2px 6px
-}
-
-.tc button {
-    padding: 2px 9px !important
-}
-
-.tc b {
-    min-width: 1.2em;
-    text-align: center;
-    font-weight: 400
-}
-
-.edit-only {
-    display: none !important
-}
-
-body.edit .edit-only {
-    display: inline-block !important
-}
-
-body.edit .tc.edit-only {
-    display: flex !important
-}
-
-#board {
-    flex: 1 1 auto;
-    min-height: max(300px, 52vh);
-    display: grid;
-    gap: var(--gap);
-    padding: 0 14px 8px;
-    min-height: 0;
-    grid-auto-rows: 1fr;
-    grid-template-rows: .6fr
-}
-
-.cat {
-    background: var(--tile);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 6px;
-    font-size: clamp(12px, 2vw, 26px);
-    text-transform: uppercase;
-    border-bottom: 4px solid var(--accent);
-    min-width: 0;
-    overflow: hidden
-}
-
-.cat input {
-    width: 100%;
-    background: transparent;
-    border: 0;
-    text-align: center;
-    text-transform: uppercase;
-    outline: none
-}
-
-.tile {
-    background: var(--tile);
-    border: 0;
-    border-radius: var(--radius);
-    color: var(--accent);
-    font-size: clamp(18px, 4vw, 54px);
-    text-shadow: 0 3px 0 rgba(0, 0, 0, .4);
-    box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .25);
-    transition: transform .15s, filter .15s;
-    min-width: 0
-}
-
-.tile:hover {
-    transform: scale(1.05);
-    filter: brightness(1.25);
-    z-index: 2
-}
-
-.tile.used {
-    background: transparent;
-    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .08);
-    pointer-events: none
-}
-
-.intro .tile,
-.intro .cat {
-    animation: drop .5s cubic-bezier(.2, 1.4, .4, 1) backwards
-}
-
-@keyframes drop {
-    from {
-        transform: translateY(-120%) rotate(-6deg);
-        opacity: 0
+  <script>
+    const $ = s => document.querySelector(s), mk = (t, c, x) => {const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e};
+    const FONTS = {Impact: "Impact,'Arial Narrow',sans-serif", Georgia: "Georgia,serif", Trebuchet: "'Trebuchet MS',sans-serif", Courier: "'Courier New',monospace", Chalkboard: "'Comic Sans MS','Chalkboard SE',cursive", Verdana: "Verdana,sans-serif"};
+    const P = {
+      Classic: {bg: '#0a1a5c', bg2: '#050d33', tile: '#1a3fb5', text: '#ffffff', accent: '#ffcc33', font: FONTS.Impact, radius: 6, gap: 8},
+      Neon: {bg: '#2a0060', bg2: '#000000', tile: '#4a0a8a', text: '#f5e9ff', accent: '#00f0ff', font: FONTS.Trebuchet, radius: 16, gap: 10},
+      Sunset: {bg: '#ff7a45', bg2: '#7a1f5c', tile: '#4a1942', text: '#fff4e0', accent: '#ffd166', font: FONTS.Georgia, radius: 18, gap: 10},
+      Chalkboard: {bg: '#2b5a43', bg2: '#10231a', tile: '#2d5a43', text: '#f4f1e6', accent: '#f2d16b', font: FONTS.Chalkboard, radius: 4, gap: 6},
+      Paper: {bg: '#f2ead8', bg2: '#d9cdb0', tile: '#fffaf0', text: '#2a2118', accent: '#b3341b', font: FONTS.Georgia, radius: 2, gap: 8}
+    };
+    const cl = (q, a, dd) => ({q: q || 'ADD QUESTION', a: a || 'ADD ANSWER', dd: !!dd});
+    function def() {
+      return {
+        title: 'JEOPARDY!', theme: {...P.Classic}, values: [200, 400, 600, 800, 1000], turn: 0, used: {},
+        cats: [1, 2, 3, 4, 5].map(n => ({name: 'CAT ' + n, clues: [0, 1, 2, 3, 4].map(() => cl())})),
+        teams: [{name: 'Team 1', score: 0, color: '#ff7b7b'}, {name: 'Team 2', score: 0, color: '#7bd0ff'}, {name: 'Team 3', score: 0, color: '#8dff7b'}]
+      }
     }
-}
-
-#scores {
-    flex: 0 0 auto;
-    display: flex;
-    gap: 8px;
-    padding: 8px 14px 14px;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-height: 34vh;
-    overflow-y: auto
-}
-
-.team {
-    cursor: pointer;
-    user-select: none;
-    --c: #fff;
-    background: rgba(0, 0, 0, .35);
-    border: 3px solid var(--c);
-    border-radius: var(--radius);
-    padding: 6px 10px;
-    flex: 1 1 var(--tw, 150px);
-    min-width: 0;
-    max-width: 280px;
-    text-align: center;
-    position: relative;
-    transition: box-shadow .3s
-}
-
-.team.turn {
-    box-shadow: 0 0 0 3px var(--accent), 0 0 22px var(--accent)
-}
-
-.team .nm {
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis
-}
-
-.team b {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: clamp(20px, calc(4vw - var(--shrink, 0px)), 44px);
-    font-weight: 400;
-    color: var(--c)
-}
-
-.team b.neg {
-    color: #ff6b6b
-}
-
-.dense .team {
-    padding: 3px 6px;
-    border-width: 2px
-}
-
-.dense .team .nm {
-    font-size: 13px
-}
-
-.dense .team b {
-    font-size: clamp(16px, 2.4vw, 26px)
-}
-
-.dense .adj button {
-    font-size: 10px;
-    margin: 0 1px;
-    padding: 0 3px
-}
-
-.dense .team input[type=color] {
-    width: 20px;
-    height: 14px
-}
-
-.team.pop b {
-    animation: pop .5s
-}
-
-@keyframes pop {
-    40% {
-        transform: scale(1.5)
+    const OLDQ = ['This planet is known as the Red Planet', 'Ancient wonder in Egypt built as a tomb', 'Hitchcock thriller set in a shower', 'Longest river in Africa', 'Italian dish of flat dough, tomato and cheese'];
+    const OLDC = ['Science', 'History', 'Movies', 'Geography', 'Food'];
+    function fix(d) {try {d.cats.forEach((c, i) => {if (c.name === OLDC[i] || c.name === 'New category') c.name = 'CAT ' + (i + 1)}); d.cats.forEach(c => c.clues.forEach(k => {const blank = !k.q && !k.a; if (blank || OLDQ.includes(k.q)) {k.q = 'ADD QUESTION'; k.a = 'ADD ANSWER'; if (blank) k.dd = false} else {if (!k.q) k.q = 'ADD QUESTION'; if (!k.a) k.a = 'ADD ANSWER'} }))} catch (e) { } return d}
+    function load() {try {return fix(JSON.parse(localStorage.getItem('jeo-maker')))} catch (e) {return null} }
+    function save() {try {localStorage.setItem('jeo-maker', JSON.stringify(S))} catch (e) {if (!window._qw) {window._qw = 1; alert('Your browser could not store the whole game (probably too many or too large images). Use Save file to keep a copy.')} } }
+    let S = load() || def(), edit = false, cur = null, snd = true, AC;
+    // ---------- sound
+    function beep(seq, type = 'triangle') {if (!snd) return; try {AC = AC || new (window.AudioContext || window.webkitAudioContext)(); let t = AC.currentTime; seq.forEach(([f, d]) => {const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = f; g.gain.setValueAtTime(.15, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d); t += d * .8})} catch (e) { } }
+    const sfx = {ok: () => beep([[523, .12], [659, .12], [784, .25]]), no: () => beep([[150, .35]], 'sawtooth'), open: () => beep([[330, .08], [440, .08]]), dd: () => beep([[392, .15], [523, .15], [659, .15], [784, .3]])};
+    // ---------- theme
+    function applyTheme() {const t = S.theme, r = document.documentElement.style;['bg', 'bg2', 'tile', 'text', 'accent', 'font'].forEach(k => r.setProperty('--' + k, t[k])); r.setProperty('--radius', t.radius + 'px'); r.setProperty('--gap', t.gap + 'px')}
+    // ---------- board
+    function board(anim) {
+      const b = $('#board'); b.className = anim ? 'intro' : ''; b.style.gridTemplateColumns = `repeat(${S.cats.length},1fr)`; b.style.gridTemplateRows = `.55fr repeat(${S.values.length},1fr)`; b.innerHTML = '';
+      S.cats.forEach((c, i) => {
+        const h = mk('div', 'cat'); h.style.animationDelay = i * 70 + 'ms';
+        if (edit) {const n = mk('input'); n.value = c.name; n.oninput = () => {c.name = n.value; save()}; h.append(n)} else h.textContent = c.name; b.append(h)
+      });
+      S.values.forEach((v, r) => S.cats.forEach((c, i) => {
+        const t = mk('button', 'tile'); const k = i + '-' + r, used = S.used[k] && !edit;
+        t.textContent = used ? '' : '$' + v + (edit && c.clues[r].dd ? ' ★' : '') + (edit && c.clues[r].img ? ' 🖼' : ''); if (used) t.classList.add('used');
+        t.style.animationDelay = (i * 70 + r * 90 + 300) + 'ms'; t.onclick = () => edit ? editor(i, r) : openClue(i, r, t); b.append(t)
+      }))
     }
-}
-
-.adj button {
-    background: none;
-    border: 1px solid rgba(255, 255, 255, .3);
-    border-radius: 4px;
-    margin: 0 2px;
-    font-size: 12px
-}
-
-.team .x {
-    position: absolute;
-    top: 2px;
-    right: 4px;
-    border: 0;
-    background: none;
-    font-size: 14px
-}
-
-.team input[type=color] {
-    width: 28px;
-    height: 20px;
-    padding: 0;
-    border: 0;
-    background: none
-}
-
-.float {
-    position: absolute;
-    left: 50%;
-    top: -6px;
-    font-size: 26px;
-    pointer-events: none;
-    animation: fl 1.2s forwards;
-    color: #7dff9b
-}
-
-.float.neg {
-    color: #ff6b6b
-}
-
-@keyframes fl {
-    to {
-        transform: translate(-50%, -60px);
-        opacity: 0
+    function scores(pop, delta) {
+      const s = $('#scores'); s.innerHTML = ''; $('#tN').textContent = S.teams.length; const n = S.teams.length; s.classList.toggle('dense', n > 5); s.style.setProperty('--tw', n > 9 ? '88px' : n > 7 ? '100px' : n > 5 ? '118px' : n > 3 ? '140px' : '170px');
+      S.teams.forEach((t, i) => {
+        const d = mk('div', 'team' + (i == S.turn ? ' turn' : '') + (i === pop ? ' pop' : '')); d.style.setProperty('--c', t.color);
+        const n = mk('div', 'nm', t.name);
+        const sc = mk('b', t.score < 0 ? 'neg' : '', '$' + t.score.toLocaleString());
+        d.append(n, sc); d.onclick = () => {S.turn = i; save(); scores()};
+        if (edit) {const c = mk('input'); c.type = 'color'; c.value = t.color; c.onclick = e => e.stopPropagation(); c.oninput = () => {t.color = c.value; save(); d.style.setProperty('--c', c.value)}; d.append(c)}
+        if (i === pop) {const f = mk('span', 'float' + (delta < 0 ? ' neg' : ''), (delta > 0 ? '+' : '−') + '$' + Math.abs(delta)); d.append(f)}
+        s.append(d)
+      })
     }
-}
-
-#ov {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(var(--tile), var(--bg2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    animation: zin .45s cubic-bezier(.2, .9, .3, 1)
-}
-
-#ov.out {
-    animation: zout .25s forwards
-}
-
-@keyframes zin {
-    from {
-        transform: scale(.05);
-        opacity: .3
+    function add(i, d) {S.teams[i].score += d; save(); scores(i, d)}
+    // ---------- clue
+    function openClue(i, r, el) {
+      const k = i + '-' + r; if (S.used[k]) return; const c = S.cats[i].clues[r];
+      cur = {i, r, c, k, locked: new Set(), team: S.turn, wager: 0, dd: c.dd, stage: c.dd ? 0 : 1, rev: false, done: false};
+      const b = el.getBoundingClientRect(), ov = $('#ov'); ov.style.transformOrigin = (b.left + b.width / 2) + 'px ' + (b.top + b.height / 2) + 'px'; ov.classList.remove('out'); ov.hidden = false;
+      c.dd ? sfx.dd() : sfx.open(); draw()
     }
-}
-
-@keyframes zout {
-    to {
-        transform: scale(.05);
-        opacity: 0
+    const btn = (l, f, c) => {const b = mk('button', 'btn ' + (c || ''), l); b.onclick = f; return b};
+    function draw() {
+      const {c, i, r} = cur, v = S.values[r], q = $('#q'), a = $('#ans'), act = $('#act'); act.innerHTML = '';
+      $('#meta').textContent = S.cats[i].name + ' · $' + v;
+      if (cur.stage == 0) {
+        $('#qimg').hidden = true; q.className = 'dd'; q.textContent = 'Daily Double!';
+        if (!S.teams[cur.team]) cur.team = 0; a.textContent = S.teams[cur.team].name + ', place your wager';
+        const w = mk('input'); w.type = 'number'; w.className = 'btn'; w.value = Math.max(v, Math.min(S.teams[cur.team].score, 1000)); w.style.cssText = 'width:140px;background:#fff;color:#111;text-align:center';
+        act.append(w, btn('Lock wager', () => {cur.wager = Math.max(0, +w.value || 0); cur.stage = 1; draw()})); return
+      }
+      q.className = ''; q.textContent = c.q || '(No clue written yet. Use Edit to add one.)'; a.textContent = cur.rev ? (c.a || '—') : '';
+      const im = $('#qimg'); if (c.img) {if (im.getAttribute('src') !== c.img) im.src = c.img; im.hidden = false} else im.hidden = true;
+      const amt = cur.dd ? cur.wager : v;
+      if (cur.done) {act.append(btn('Close', closeClue)); return }
+      if (!cur.rev) {const rv = mk('div', 'full'); rv.append(btn('Reveal answer', () => {cur.rev = true; draw()})); act.append(rv)}
+      S.teams.forEach((t, n) => {
+        if (cur.dd && n != cur.team) return; const lk = cur.locked.has(n);
+        const y = btn('✓ ' + t.name + ' +$' + amt.toLocaleString(), () => right(n, amt), 'ok'), x = btn('✗', () => wrong(n, amt), 'no'); y.disabled = x.disabled = lk; act.append(y, x)
+      });
+      const no = mk('div', 'full'); no.append(btn('No one', () => finish())); act.append(no)
     }
-}
-
-#ov[hidden],
-#ed[hidden],
-#th[hidden] {
-    display: none
-}
-
-#card {
-    width: min(1000px, 94vw);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center
-}
-
-#card.shake {
-    animation: shake .4s
-}
-
-@keyframes shake {
-    25% {
-        transform: translateX(-18px)
+    function finish() {cur.rev = cur.done = true; S.used[cur.k] = 1; save(); board(); draw()}
+    function right(n, a) {add(n, a); S.turn = n; sfx.ok(); confetti(); finish(); scores(n, a)}
+    function wrong(n, a) {
+      add(n, -a); sfx.no(); cur.locked.add(n); const c = $('#card'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+      if (cur.dd || cur.locked.size >= S.teams.length) finish(); else draw()
     }
-
-    75% {
-        transform: translateX(18px)
+    function closeClue() {if (!cur) return; const ov = $('#ov'); ov.classList.add('out'); cur = null; setTimeout(() => {ov.hidden = true}, 230)}
+    function confetti() {const cs = [S.theme.accent, '#fff', '#ff6b6b', '#6bd5ff', '#8dff7b']; for (let n = 0; n < 70; n++) {const e = mk('i', 'conf'); e.style.left = Math.random() * 100 + 'vw'; e.style.background = cs[n % 5]; e.style.animationDelay = Math.random() * .5 + 's'; e.style.animationDuration = 1.8 + Math.random() * 1.5 + 's'; document.body.append(e); setTimeout(() => e.remove(), 4000)} }
+    // ---------- editor
+    let ei = 0, er = 0;
+    function editor(i, r) {ei = i; er = r; const c = S.cats[i].clues[r]; $('#edH').textContent = S.cats[i].name + ' · row ' + (r + 1); $('#eq').value = c.q; $('#ea').value = c.a; $('#ev').value = S.values[r]; $('#ed2').value = c.dd ? 1 : 0; pendingImg = c.img || ''; showImg(); $('#ed').hidden = false; $('#eq').focus()}
+    let pendingImg = '';
+    function showImg() {$('#eiw').style.display = pendingImg ? 'flex' : 'none'; $('#eip').src = pendingImg}
+    $('#ei').onchange = e => {
+      const f = e.target.files[0]; e.target.value = ''; if (!f) return; const r = new FileReader();
+      r.onload = () => {
+        const im = new Image(); im.onload = () => {
+          const k = Math.min(1, 900 / Math.max(im.width, im.height)), cv = document.createElement('canvas');
+          cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k); const x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, cv.width, cv.height); x.drawImage(im, 0, 0, cv.width, cv.height);
+          pendingImg = cv.toDataURL('image/jpeg', .8); showImg()
+        }; im.onerror = () => alert('That image could not be read. Please use a JPG, PNG, GIF or WebP file (iPhone HEIC photos are not supported).'); im.src = r.result
+      }; r.onerror = () => alert('That file could not be opened.'); r.readAsDataURL(f)
+    };
+    $('#eiX').onclick = () => {pendingImg = ''; showImg()};
+    $('#edX').onclick = () => $('#ed').hidden = true;
+    $('#edS').onclick = () => {const c = S.cats[ei].clues[er]; c.q = $('#eq').value; c.a = $('#ea').value; c.dd = $('#ed2').value == '1'; c.img = pendingImg; S.values[er] = +$('#ev').value || S.values[er]; save(); $('#ed').hidden = true; board()};
+    // ---------- structure
+    const nR = () => S.values.length;
+    $('#rDD').onclick = () => {
+      const all = []; S.cats.forEach((c, i) => c.clues.forEach((k, r) => {k.dd = false; all.push([i, r])}));
+      for (let n = 0; n < 2 && all.length; n++) {const [i, r] = all.splice(Math.floor(Math.random() * all.length), 1)[0]; S.cats[i].clues[r].dd = true} save(); board()
+    };
+    $('#aC').onclick = () => {if (S.cats.length >= 8) return; S.cats.push({name: 'CAT ' + (S.cats.length + 1), clues: S.values.map(() => cl())}); save(); board()};
+    $('#rC').onclick = () => {if (S.cats.length > 1) {S.cats.pop(); save(); board()} };
+    $('#aR').onclick = () => {if (nR() >= 8) return; S.values.push(S.values[nR() - 1] + 200); S.cats.forEach(c => c.clues.push(cl())); save(); board()};
+    $('#rR').onclick = () => {if (nR() > 1) {S.values.pop(); S.cats.forEach(c => c.clues.pop()); save(); board()} };
+    const COLORS = ['#ff7b7b', '#7bd0ff', '#8dff7b', '#ffd97b', '#d39bff', '#ff9be0', '#7bffe3', '#ffb07b', '#b0c4ff', '#c8ff7b', '#ff7b9c', '#9bffb0'];
+    $('#tP').onclick = () => {if (S.teams.length >= 12) return; const n = S.teams.length; S.teams.push({name: 'Team ' + (n + 1), score: 0, color: COLORS[n % COLORS.length]}); save(); scores()};
+    $('#tM').onclick = () => {if (S.teams.length <= 1) return; S.teams.pop(); if (S.turn >= S.teams.length) S.turn = 0; save(); scores()};
+    // ---------- toolbar
+    $('#bEdit').onclick = () => {edit = !edit; document.body.classList.toggle('edit', edit); $('#bEdit').textContent = edit ? '▶ Play' : '✎ Edit'; $('#title').contentEditable = edit; board(); scores()};
+    $('#title').oninput = e => {S.title = e.target.textContent; save(); document.title = S.title};
+    function twoClick(id, label, fn) {const b = $(id); let t; b.onclick = () => {if (b.dataset.arm) {clearTimeout(t); delete b.dataset.arm; b.textContent = label; fn()} else {b.dataset.arm = 1; b.textContent = 'Click again to confirm'; t = setTimeout(() => {delete b.dataset.arm; b.textContent = label}, 3000)} }}
+    twoClick('#bNew', '↺ New round', () => {if (cur) closeClue(); S.used = {}; S.teams.forEach(t => t.score = 0); S.turn = 0; save(); board(true); scores()});
+    // ---------- save / load file
+    $('#bExp').onclick = () => {const a = mk('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], {type: 'application/json'})); a.download = (S.title || 'jeopardy').replace(/\W+/g, '-') + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000)};
+    $('#bImp').onclick = () => $('#file').click();
+    $('#file').onchange = e => {
+      const f = e.target.files[0]; e.target.value = ''; if (!f) return; const r = new FileReader(); r.onload = () => {
+        try {
+          const d = JSON.parse(r.result); if (!Array.isArray(d.cats) || !Array.isArray(d.values)) throw 0;
+          const D = def(); d.title = d.title || D.title; d.theme = {...P.Classic, ...d.theme}; d.teams = Array.isArray(d.teams) && d.teams.length ? d.teams : D.teams; d.turn = d.turn < d.teams.length ? d.turn || 0 : 0; d.used = d.used || {}; S = fix(d); save(); if (cur) closeClue(); init()
+        } catch (x) {alert('That file is not a valid game file.')}
+      }; r.readAsText(f)
+    };
+    // ---------- theme panel
+    function themeUI() {
+      const sel = $('#tp'); sel.innerHTML = '<option value="">Custom</option>' + Object.keys(P).map(k => `<option>${k}</option>`).join('');
+      const tf = $('#tf'); tf.innerHTML = Object.keys(FONTS).map(k => `<option value="${FONTS[k]}">${k}</option>`).join('');
+      document.querySelectorAll('[data-k]').forEach(i => {i.value = S.theme[i.dataset.k]; i.oninput = () => {S.theme[i.dataset.k] = i.type == 'range' ? +i.value : i.value; save(); applyTheme(); sel.value = ''}});
+      sel.onchange = () => {if (!sel.value) return; S.theme = {...P[sel.value]}; save(); applyTheme(); document.querySelectorAll('[data-k]').forEach(i => i.value = S.theme[i.dataset.k])}
     }
-}
+    $('#bTheme').onclick = () => {themeUI(); $('#th').hidden = false}; $('#thX').onclick = () => $('#th').hidden = true;
+    document.addEventListener('keydown', e => {
+      if (!cur || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+      if (e.key == 'Escape') closeClue(); else if (e.key == ' ' && cur.stage == 1 && !cur.rev) {e.preventDefault(); cur.rev = true; draw()}
+    });
+    function init() {applyTheme(); $('#title').textContent = S.title; document.title = S.title; board(true); scores()}
+    init();
+  </script>
+</body>
 
-#meta {
-    color: var(--accent);
-    font-size: clamp(16px, 2.5vw, 28px);
-    text-transform: uppercase
-}
-
-#q {
-    font-size: clamp(24px, 5vw, 64px);
-    line-height: 1.2;
-    text-transform: uppercase;
-    text-shadow: 0 3px 0 rgba(0, 0, 0, .4)
-}
-
-#q.dd {
-    color: var(--accent);
-    font-size: clamp(36px, 9vw, 110px);
-    animation: ddp .8s infinite alternate
-}
-
-@keyframes ddp {
-    to {
-        transform: scale(1.08) rotate(-2deg)
-    }
-}
-
-#ans {
-    font-size: clamp(20px, 3.5vw, 44px);
-    color: var(--accent);
-    min-height: 1.2em;
-    animation: fade .5s
-}
-
-#qimg[hidden] {
-    display: none
-}
-
-#qimg {
-    max-width: min(90vw, 700px);
-    max-height: 38vh;
-    object-fit: contain;
-    border-radius: var(--radius);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, .5);
-    animation: fade .5s
-}
-
-@keyframes fade {
-    from {
-        opacity: 0;
-        transform: translateY(12px)
-    }
-}
-
-#act {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center
-}
-
-#act .full {
-    flex: 0 0 100%;
-    display: flex;
-    justify-content: center
-}
-
-#act .btn {
-    font-size: 18px;
-    padding: 8px 14px
-}
-
-.ok {
-    background: #1b8a3a !important
-}
-
-.no {
-    background: #a82424 !important
-}
-
-button:disabled {
-    opacity: .3;
-    pointer-events: none
-}
-
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, .6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 30
-}
-
-.panel {
-    background: #fff;
-    color: #222;
-    font-family: system-ui, sans-serif;
-    padding: 18px;
-    border-radius: 12px;
-    width: min(480px, 94vw);
-    display: grid;
-    gap: 10px;
-    max-height: 92vh;
-    overflow: auto
-}
-
-.panel h3 {
-    margin: 0
-}
-
-.panel label {
-    display: grid;
-    gap: 4px;
-    font-size: 14px
-}
-
-.panel input,
-.panel textarea,
-.panel select {
-    border: 1px solid #bbb;
-    border-radius: 6px;
-    padding: 6px;
-    color: #222;
-    background: #fff
-}
-
-.panel input[type=color] {
-    height: 34px;
-    padding: 2px
-}
-
-.panel .row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px
-}
-
-.panel .btn {
-    background: #eee;
-    color: #222;
-    border-color: #ccc
-}
-
-.panel .btn.pri {
-    background: #1a3fb5;
-    color: #fff
-}
-
-.conf {
-    position: fixed;
-    top: -20px;
-    width: 10px;
-    height: 14px;
-    z-index: 40;
-    pointer-events: none;
-    animation: cf 2.4s ease-in forwards
-}
-
-@keyframes cf {
-    to {
-        transform: translateY(110vh) rotate(720deg)
-    }
-}
-
-@media(prefers-reduced-motion:reduce) {
-    * {
-        animation-duration: .01s !important
-    }
-}
+</html>
