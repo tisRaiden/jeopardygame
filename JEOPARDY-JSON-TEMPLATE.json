@@ -1,0 +1,196 @@
+{
+ "title": "JEOPARDY!",
+ "theme": {
+  "bg": "#ff7a45",
+  "bg2": "#7a1f5c",
+  "tile": "#4a1942",
+  "text": "#fff4e0",
+  "accent": "#ffd166",
+  "font": "Georgia,serif",
+  "radius": 18,
+  "gap": 10
+ },
+ "values": [
+  200,
+  400,
+  600,
+  800,
+  1000
+ ],
+ "turn": 0,
+ "used": {},
+ "cats": [
+  {
+   "name": "CAT 1",
+   "clues": [
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    }
+   ]
+  },
+  {
+   "name": "CAT 2",
+   "clues": [
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    }
+   ]
+  },
+  {
+   "name": "CAT 3",
+   "clues": [
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": true
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    }
+   ]
+  },
+  {
+   "name": "CAT 4",
+   "clues": [
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": true
+    }
+   ]
+  },
+  {
+   "name": "CAT 5",
+   "clues": [
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    },
+    {
+     "q": "ADD QUESTION",
+     "a": "ADD ANSWER",
+     "dd": false
+    }
+   ]
+  }
+ ],
+ "teams": [
+  {
+   "name": "Team 1",
+   "score": 0,
+   "color": "#ff7b7b"
+  },
+  {
+   "name": "Team 2",
+   "score": 0,
+   "color": "#7accff"
+  },
+  {
+   "name": "Team 3",
+   "score": 0,
+   "color": "#8dff7b"
+  },
+  {
+   "name": "Team 4",
+   "score": 0,
+   "color": "#ffd97b"
+  }
+ ]
+}

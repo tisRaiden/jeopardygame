@@ -1,0 +1,537 @@
+:root {
+    --bg: #0a1a5c;
+    --bg2: #050d33;
+    --tile: #1a3fb5;
+    --text: #fff;
+    --accent: #ffcc33;
+    --radius: 6px;
+    --font: Impact, sans-serif;
+    --gap: 8px
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0
+}
+
+body {
+    background: radial-gradient(ellipse at 50% 0, var(--bg), var(--bg2));
+    color: var(--text);
+    font-family: var(--font);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit
+}
+
+button {
+    cursor: pointer
+}
+
+header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    flex-wrap: wrap
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(20px, 3.2vw, 40px);
+    color: var(--accent);
+    letter-spacing: .04em;
+    flex: 1;
+    min-width: 160px;
+    outline: none;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, .35)
+}
+
+h1[contenteditable=true] {
+    border-bottom: 2px dashed var(--accent)
+}
+
+.tb {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap
+}
+
+.tb button,
+.btn {
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    font-size: 14px;
+    transition: transform .12s, background .12s
+}
+
+.tb button:hover,
+.btn:hover {
+    background: rgba(255, 255, 255, .25);
+    transform: translateY(-1px)
+}
+
+.tc {
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, .08);
+    border-radius: var(--radius);
+    padding: 2px 6px
+}
+
+.tc button {
+    padding: 2px 9px !important
+}
+
+.tc b {
+    min-width: 1.2em;
+    text-align: center;
+    font-weight: 400
+}
+
+.edit-only {
+    display: none !important
+}
+
+body.edit .edit-only {
+    display: inline-block !important
+}
+
+body.edit .tc.edit-only {
+    display: flex !important
+}
+
+#board {
+    flex: 1 1 auto;
+    min-height: max(300px, 52vh);
+    display: grid;
+    gap: var(--gap);
+    padding: 0 14px 8px;
+    min-height: 0;
+    grid-auto-rows: 1fr;
+    grid-template-rows: .6fr
+}
+
+.cat {
+    background: var(--tile);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6px;
+    font-size: clamp(12px, 2vw, 26px);
+    text-transform: uppercase;
+    border-bottom: 4px solid var(--accent);
+    min-width: 0;
+    overflow: hidden
+}
+
+.cat input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    text-align: center;
+    text-transform: uppercase;
+    outline: none
+}
+
+.tile {
+    background: var(--tile);
+    border: 0;
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-size: clamp(18px, 4vw, 54px);
+    text-shadow: 0 3px 0 rgba(0, 0, 0, .4);
+    box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .25);
+    transition: transform .15s, filter .15s;
+    min-width: 0
+}
+
+.tile:hover {
+    transform: scale(1.05);
+    filter: brightness(1.25);
+    z-index: 2
+}
+
+.tile.used {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .08);
+    pointer-events: none
+}
+
+.intro .tile,
+.intro .cat {
+    animation: drop .5s cubic-bezier(.2, 1.4, .4, 1) backwards
+}
+
+@keyframes drop {
+    from {
+        transform: translateY(-120%) rotate(-6deg);
+        opacity: 0
+    }
+}
+
+#scores {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 8px 14px 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-height: 34vh;
+    overflow-y: auto
+}
+
+.team {
+    cursor: pointer;
+    user-select: none;
+    --c: #fff;
+    background: rgba(0, 0, 0, .35);
+    border: 3px solid var(--c);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    flex: 1 1 var(--tw, 150px);
+    min-width: 0;
+    max-width: 280px;
+    text-align: center;
+    position: relative;
+    transition: box-shadow .3s
+}
+
+.team.turn {
+    box-shadow: 0 0 0 3px var(--accent), 0 0 22px var(--accent)
+}
+
+.team .nm {
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+.team b {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(20px, calc(4vw - var(--shrink, 0px)), 44px);
+    font-weight: 400;
+    color: var(--c)
+}
+
+.team b.neg {
+    color: #ff6b6b
+}
+
+.dense .team {
+    padding: 3px 6px;
+    border-width: 2px
+}
+
+.dense .team .nm {
+    font-size: 13px
+}
+
+.dense .team b {
+    font-size: clamp(16px, 2.4vw, 26px)
+}
+
+.dense .adj button {
+    font-size: 10px;
+    margin: 0 1px;
+    padding: 0 3px
+}
+
+.dense .team input[type=color] {
+    width: 20px;
+    height: 14px
+}
+
+.team.pop b {
+    animation: pop .5s
+}
+
+@keyframes pop {
+    40% {
+        transform: scale(1.5)
+    }
+}
+
+.adj button {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 4px;
+    margin: 0 2px;
+    font-size: 12px
+}
+
+.team .x {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    border: 0;
+    background: none;
+    font-size: 14px
+}
+
+.team input[type=color] {
+    width: 28px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: none
+}
+
+.float {
+    position: absolute;
+    left: 50%;
+    top: -6px;
+    font-size: 26px;
+    pointer-events: none;
+    animation: fl 1.2s forwards;
+    color: #7dff9b
+}
+
+.float.neg {
+    color: #ff6b6b
+}
+
+@keyframes fl {
+    to {
+        transform: translate(-50%, -60px);
+        opacity: 0
+    }
+}
+
+#ov {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(var(--tile), var(--bg2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    animation: zin .45s cubic-bezier(.2, .9, .3, 1)
+}
+
+#ov.out {
+    animation: zout .25s forwards
+}
+
+@keyframes zin {
+    from {
+        transform: scale(.05);
+        opacity: .3
+    }
+}
+
+@keyframes zout {
+    to {
+        transform: scale(.05);
+        opacity: 0
+    }
+}
+
+#ov[hidden],
+#ed[hidden],
+#th[hidden] {
+    display: none
+}
+
+#card {
+    width: min(1000px, 94vw);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center
+}
+
+#card.shake {
+    animation: shake .4s
+}
+
+@keyframes shake {
+    25% {
+        transform: translateX(-18px)
+    }
+
+    75% {
+        transform: translateX(18px)
+    }
+}
+
+#meta {
+    color: var(--accent);
+    font-size: clamp(16px, 2.5vw, 28px);
+    text-transform: uppercase
+}
+
+#q {
+    font-size: clamp(24px, 5vw, 64px);
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, .4)
+}
+
+#q.dd {
+    color: var(--accent);
+    font-size: clamp(36px, 9vw, 110px);
+    animation: ddp .8s infinite alternate
+}
+
+@keyframes ddp {
+    to {
+        transform: scale(1.08) rotate(-2deg)
+    }
+}
+
+#ans {
+    font-size: clamp(20px, 3.5vw, 44px);
+    color: var(--accent);
+    min-height: 1.2em;
+    animation: fade .5s
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+        transform: translateY(12px)
+    }
+}
+
+#act {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center
+}
+
+#act .full {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center
+}
+
+#act .btn {
+    font-size: 18px;
+    padding: 8px 14px
+}
+
+.ok {
+    background: #1b8a3a !important
+}
+
+.no {
+    background: #a82424 !important
+}
+
+button:disabled {
+    opacity: .3;
+    pointer-events: none
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 30
+}
+
+.panel {
+    background: #fff;
+    color: #222;
+    font-family: system-ui, sans-serif;
+    padding: 18px;
+    border-radius: 12px;
+    width: min(480px, 94vw);
+    display: grid;
+    gap: 10px;
+    max-height: 92vh;
+    overflow: auto
+}
+
+.panel h3 {
+    margin: 0
+}
+
+.panel label {
+    display: grid;
+    gap: 4px;
+    font-size: 14px
+}
+
+.panel input,
+.panel textarea,
+.panel select {
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    padding: 6px;
+    color: #222;
+    background: #fff
+}
+
+.panel input[type=color] {
+    height: 34px;
+    padding: 2px
+}
+
+.panel .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px
+}
+
+.panel .btn {
+    background: #eee;
+    color: #222;
+    border-color: #ccc
+}
+
+.panel .btn.pri {
+    background: #1a3fb5;
+    color: #fff
+}
+
+.conf {
+    position: fixed;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    z-index: 40;
+    pointer-events: none;
+    animation: cf 2.4s ease-in forwards
+}
+
+@keyframes cf {
+    to {
+        transform: translateY(110vh) rotate(720deg)
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    * {
+        animation-duration: .01s !important
+    }
+}
