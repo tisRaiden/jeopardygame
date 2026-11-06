@@ -139,13 +139,13 @@
       const {c, i, r} = cur, v = S.values[r], q = $('#q'), a = $('#ans'), act = $('#act'); act.innerHTML = '';
       $('#meta').textContent = S.cats[i].name + ' · $' + v;
       if (cur.stage == 0) {
-        $('#qimg').hidden = true; q.className = 'dd'; q.textContent = 'Daily Double!';
+        $('#qimg').hidden = true; $('#card').classList.remove('has-img'); q.className = 'dd'; q.textContent = 'Daily Double!';
         if (!S.teams[cur.team]) cur.team = 0; a.textContent = S.teams[cur.team].name + ', place your wager';
         const w = mk('input'); w.type = 'number'; w.className = 'btn'; w.value = Math.max(v, Math.min(S.teams[cur.team].score, 1000)); w.style.cssText = 'width:140px;background:#fff;color:#111;text-align:center';
         act.append(w, btn('Lock wager', () => {cur.wager = Math.max(0, +w.value || 0); cur.stage = 1; draw()})); return
       }
       q.className = ''; q.textContent = c.q || '(No clue written yet. Use Edit to add one.)'; a.textContent = cur.rev ? (c.a || '—') : '';
-      const im = $('#qimg'); if (c.img) {if (im.getAttribute('src') !== c.img) im.src = c.img; im.hidden = false} else im.hidden = true;
+      $('#card').classList.toggle('has-img', !!c.img); const im = $('#qimg'); if (c.img) {if (im.getAttribute('src') !== c.img) im.src = c.img; im.hidden = false} else im.hidden = true;
       const amt = cur.dd ? cur.wager : v;
       if (cur.done) {act.append(btn('Close', closeClue)); return }
       if (!cur.rev) {const rv = mk('div', 'full'); rv.append(btn('Reveal answer', () => {cur.rev = true; draw()})); act.append(rv)}
@@ -210,7 +210,7 @@
         } catch (x) {alert('That file is not a valid game file.')}
       }; r.readAsText(f)
     };
-    // ---------- theme panel
+    
     function themeUI() {
       const sel = $('#tp'); sel.innerHTML = '<option value="">Custom</option>' + Object.keys(P).map(k => `<option>${k}</option>`).join('');
       const tf = $('#tf'); tf.innerHTML = Object.keys(FONTS).map(k => `<option value="${FONTS[k]}">${k}</option>`).join('');
