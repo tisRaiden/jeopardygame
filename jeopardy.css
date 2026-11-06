@@ -411,6 +411,19 @@ body.edit .tc.edit-only {
     animation: fade .5s
 }
 
+#qimg[hidden] {
+    display: none
+}
+
+#qimg {
+    max-width: min(90vw, 700px);
+    max-height: 38vh;
+    object-fit: contain;
+    border-radius: var(--radius);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .5);
+    animation: fade .5s
+}
+
 @keyframes fade {
     from {
         opacity: 0;
