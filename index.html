@@ -34,6 +34,7 @@
     <div id="card">
       <div id="meta"></div>
       <div id="q"></div>
+      <img id="qimg" alt="" hidden>
       <div id="ans"></div>
       <div id="act"></div>
     </div>
@@ -44,6 +45,11 @@
       <h3 id="edH">Edit clue</h3>
       <label>Clue<textarea id="eq" rows="3"></textarea></label>
       <label>Answer<input id="ea"></label>
+      <label>Image (optional)<input id="ei" type="file" accept="image/*"></label>
+      <div id="eiw" style="display:none;gap:10px;align-items:center">
+        <img id="eip" alt="" style="max-height:80px;border-radius:6px">
+        <button class="btn" id="eiX" type="button">Remove image</button>
+      </div>
       <div class="row"><label>Row value ($)<input id="ev" type="number"></label><label>Daily Double<select id="ed2">
             <option value="0">No</option>
             <option value="1">Yes</option>
